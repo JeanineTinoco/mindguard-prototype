@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindGuard - Prototipo Funcional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo { font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; }
+        .tagline { font-size: 1.1rem; opacity: 0.9; }
+
+        .main-content { flex: 1; display: flex; overflow: hidden; }
+
+        .sidebar {
+            width: 250px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .nav-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover { background: #e3f2fd; }
+        .nav-item.active { background: #2196f3; color: white; }
+
+        .content-area { flex: 1; padding: 20px; overflow-y: auto; }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,107,107,0.4);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover { transform: translateY(-5px); }
+
+        .icon { font-size: 2rem; margin-bottom: 10px; }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+            border-radius: 15px;
+            overflow: hidden;
+            max-height: 500px;
+        }
+
+        .chat-header {
+            background: #2196f3;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            min-height: 300px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .message.bot {
+            background: #e3f2fd;
+            align-self: flex-start;
+        }
+
+        .message.user {
+            background: #4caf50;
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .chat-input button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛡️ MindGuard</div>
+            <div class="tagline">Primeros Auxilios Psicológicos con IA</div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="nav-item active" onclick="showScreen('welcome')">
+                    <span>🏠</span> Inicio
+                </div>
+                <div class="nav-item" onclick="showScreen('chat')">
+                    <span>💬</span> Chat IA
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div id="welcome" class="screen active">
+                    <div class="welcome-screen">
+                        <h1 class="welcome-title">Bienvenido a MindGuard</h1>
+                        <p style="font-size: 1.3rem; color: #666; margin-bottom: 30px;">
+                            Tu espacio seguro para el bienestar mental universitario
+                        </p>
+                        <button class="start-button" onclick="showScreen('chat')">
+                            🚀 Comenzar Chat con IA
+                        </button>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <div class="icon">🤖</div>
+                                <h3>IA Especializada</h3>
+                                <p>Chatbot entrenado en técnicas de primeros auxilios psicológicos</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="icon">🔒</div>
+                                <h3>100% Confidencial</h3>
+                                <p>Conversaciones protegidas y completamente anónimas</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="icon">⚡</div>
+                                <h3>Disponible 24/7</h3>
+                                <p>Acceso inmediato cuando más lo necesitas</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="icon">👥</div>
+                                <h3>Conexión Humana</h3>
+                                <p>Derivación automática a terapeutas certificados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="chat" class="screen">
+                    <h2>💬 Chat con Asistente IA</h2>
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            MindGuard IA - Siempre aquí para ayudarte
+                        </div>
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message bot">
+                                ¡Hola! Soy tu asistente de MindGuard. Estoy aquí para ayudarte con técnicas de primeros auxilios psicológicos. ¿Cómo te sientes hoy?
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+                            <button onclick="sendMessage()">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            document.getElementById(screenId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.target.closest('.nav-item').classList.add('active');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, 'user');
+                input.value = '';
+                
+                setTimeout(() => {
+                    generateBotResponse(message);
+                }, 1000);
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateBotResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            let response = '';
+            
+            if (lowerMessage.includes('ansiedad') || lowerMessage.includes('ansioso')) {
+                response = '😌 Entiendo tu ansiedad. Practiquemos una técnica de respiración: Inhala por 4 segundos, mantén por 4, exhala por 6. Repite 5 veces. ¿Te sientes mejor?';
+            } else if (lowerMessage.includes('triste') || lowerMessage.includes('deprimido')) {
+                response = '💙 Lamento que te sientas así. Es normal sentirse triste a veces. ¿Puedes contarme qué está causando estos sentimientos? Estoy aquí para escucharte.';
+            } else {
+                response = '🤗 Entiendo lo que me dices. Cuéntame más sobre cómo te sientes. Estoy aquí para ayudarte con técnicas de primeros auxilios psicológicos.';
+            }
+            
+            addMessage(response, 'bot');
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        console.log('✅ MindGuard Prototipo cargado correctamente');
+    </script>
+</body>
+</html>
